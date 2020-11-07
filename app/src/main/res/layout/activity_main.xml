@@ -18,6 +18,98 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6"
-        app:onFling="onFling"/>
+        app:onFling="onFling" />
+
+    <TextView
+        android:id="@+id/textViewStartTime"
+        android:layout_width="173dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/start_time"
+        android:gravity="center_vertical|center_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridsLayout"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <TextView
+        android:id="@+id/textViewTitleMaxNumber"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/max_number"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="#FFC0C0C0"
+        app:layout_constraintBottom_toTopOf="@+id/textViewTitleScore"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewTitleScore"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/score"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="#FFC0C0C0"
+        app:layout_constraintBottom_toTopOf="@+id/textViewTitleSteps"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewTitleSteps"
+        android:layout_width="75dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="48dp"
+        android:text="@string/steps"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="#FFC0C0C0"
+        app:layout_constraintBottom_toTopOf="@+id/gridsLayout"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSteps"
+        android:layout_width="240dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="48dp"
+        android:text="@string/init_steps"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/gridsLayout"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleSteps" />
+
+    <TextView
+        android:id="@+id/textViewScore"
+        android:layout_width="240dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/init_score"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewSteps"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleScore" />
+
+    <TextView
+        android:id="@+id/textViewMaxNumber"
+        android:layout_width="240dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/init_max_number"
+        android:textColor="#FF000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewScore"
+        app:layout_constraintStart_toEndOf="@+id/textViewTitleMaxNumber" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
