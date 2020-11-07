@@ -7,9 +7,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SoundEffect {
     private boolean voiceEnabled = true;
     private boolean reviewing = false;
+
+    public boolean soundEffectEnabled() {
+        return voiceEnabled;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
