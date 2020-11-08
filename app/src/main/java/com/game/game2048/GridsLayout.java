@@ -236,7 +236,7 @@ class SingleGrid extends View {
             String strNumber = String.valueOf(number);
 
             paint.setColor(colorScheme.getColor(number).foreground());
-            paint.setTextSize(getTextSize()); // TODO: decrease the text size if the string is too long, or set it by the outer
+            paint.setTextSize(getTextSize());
             paint.getTextBounds(strNumber, 0, strNumber.length(), bound);
 
             float x = (getWidth() - bound.width()) / 2.0f;

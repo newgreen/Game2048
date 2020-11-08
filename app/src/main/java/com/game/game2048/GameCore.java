@@ -22,6 +22,8 @@ class GameCore {
             addGridNumber();
             initGridCnt++;
         }
+
+        setMaxNumber(Common.max(gameData.grids));
     }
 
     private void initGameData() {
@@ -38,7 +40,7 @@ class GameCore {
         gameData.gameStatus = GameStatus.PLAY;
         gameData.replayStep = 0;
 
-        gameData.maxNumber = 2; // auto-gen 2,4; assume 2 is the initial max
+        gameData.maxNumber = 0;
         gameData.isInit = true;
     }
 
@@ -77,9 +79,9 @@ class GameCore {
         return true;
     }
 
-    int[][] getHistory() {
+    int[][] getHistory(int[] historyScore) {
         ActionResult result = new ActionResult();
-        return getHistoryWithResult(result, true);
+        return getHistoryWithResult(result, historyScore, true);
     }
 
     void backward(int stepIndex) {
@@ -88,7 +90,7 @@ class GameCore {
             gameData.gridNumberCount = stepIndex + 2;
 
             ActionResult result = new ActionResult();
-            int[][] history = getHistoryWithResult(result, false);
+            int[][] history = getHistoryWithResult(result, null, false);
 
             gameData.grids = history[gameData.actionCount].clone();
             gameData.score = result.score;
@@ -97,7 +99,11 @@ class GameCore {
         }
     }
 
-    private int[][] getHistoryWithResult(ActionResult result, boolean needCheck) {
+    int[] allocHistoryScore() {
+        return new int[gameData.actionCount + 1];
+    }
+
+    private int[][] getHistoryWithResult(ActionResult result, int[] historyScore, boolean needCheck) {
         // plus 1 because of first grids before any action
         int[][] history = new int[gameData.actionCount + 1][gameData.column * gameData.column];
         int historyIndex = 0;
@@ -108,14 +114,24 @@ class GameCore {
         for (int i = 0; i < INIT_GRID_CNT; i++) {
             addGridNumber(replayGrids, GridNumber.decode(gameData.gridNumberHistory[i]));
         }
-        System.arraycopy(replayGrids, 0, history[historyIndex++], 0, replayGrids.length);
+
+        System.arraycopy(replayGrids, 0, history[historyIndex], 0, replayGrids.length);
+        if (historyScore != null) {
+            historyScore[historyIndex] = 0;
+        }
+        historyIndex++;
 
         // replay actions
         for (int i = 0; i < gameData.actionCount; i++) {
             ActionResult curr = action.execute(replayGrids, Direction.values()[gameData.actionHistory[i]]);
             result.score += curr.score;
             addGridNumber(replayGrids, GridNumber.decode(gameData.gridNumberHistory[i + INIT_GRID_CNT]));
-            System.arraycopy(replayGrids, 0, history[historyIndex++], 0, replayGrids.length);
+
+            System.arraycopy(replayGrids, 0, history[historyIndex], 0, replayGrids.length);
+            if (historyScore != null) {
+                historyScore[historyIndex] = result.score;
+            }
+            historyIndex++;
         }
 
         // after replayed, replayGrids should be same with grids or bugs somewhere
