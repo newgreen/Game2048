@@ -3,13 +3,16 @@ package com.game.game2048;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity implements SoundEffect {
     private boolean voiceEnabled = true;
     private boolean reviewing = false;
+    private int actionCnt = 0;
 
     public boolean soundEffectEnabled() {
         return voiceEnabled;
@@ -25,13 +28,13 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.game_menu, menu);
-        showMenu(menu);
+        prepareOptionsMenu(menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        showMenu(menu);
+        prepareOptionsMenu(menu);
         return true;
     }
 
@@ -43,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 return true;
 
             case R.id.go_back:
-            case R.id.shortcut_start_here:
                 switchGameMode();
                 return true;
 
@@ -61,6 +63,51 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         }
     }
 
+    public void actionStartHere(View view) {
+        actionCnt = 0;
+        reviewing = false;
+
+        invalidateOptionsMenu();
+        findViewById(R.id.buttonContinue).setVisibility(View.INVISIBLE);
+        findViewById(R.id.buttonStartHere).setVisibility(View.INVISIBLE);
+    }
+
+    public void actionContinue(View view) {
+        reviewing = false;
+
+        invalidateOptionsMenu();
+        findViewById(R.id.buttonContinue).setVisibility(View.INVISIBLE);
+        findViewById(R.id.buttonStartHere).setVisibility(View.INVISIBLE);
+    }
+
+    // used by GridsLayout
+    @SuppressWarnings("unused")
+    public void onFling(Direction dir) {
+        boolean needRefreshMenus = actionCnt == 0;
+
+        Log.i("Fling", "Direction " + dir);
+        actionCnt++;
+
+        if (needRefreshMenus) {
+            invalidateOptionsMenu();
+        }
+    }
+
+    private void prepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.shortcut_new_game).setVisible(!reviewing);
+        menu.findItem(R.id.new_game).setVisible(!reviewing);
+
+        menu.findItem(R.id.load_game).setVisible(!reviewing);
+
+        menu.findItem(R.id.shortcut_go_back).setVisible(!reviewing && actionCnt > 0);
+        menu.findItem(R.id.go_back).setVisible(!reviewing && actionCnt > 0);
+
+        menu.findItem(R.id.shortcut_ctrl_voice)
+                .setIcon(voiceEnabled ? R.drawable.ic_voice_enabled : R.drawable.ic_voice_disabled)
+                .setTitle(voiceEnabled ? R.string.disable_sound_effect : R.string.enable_sound_effect);
+        menu.findItem(R.id.ctrl_voice).setChecked(voiceEnabled);
+    }
+
     private void switchVoiceCtrlStatus() {
         voiceEnabled = !voiceEnabled;
         invalidateOptionsMenu();
@@ -69,33 +116,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private void switchGameMode() {
         reviewing = !reviewing;
         invalidateOptionsMenu();
-    }
-
-    private void showVoiceCtrlMenu(Menu menu) {
-        MenuItem shortCtrlVoice = menu.findItem(R.id.shortcut_ctrl_voice);
-        shortCtrlVoice.setIcon(voiceEnabled ? R.drawable.ic_voice_enabled : R.drawable.ic_voice_disabled);
-        shortCtrlVoice.setTitle(voiceEnabled ? R.string.disable_sound_effect : R.string.enable_sound_effect);
-
-        MenuItem ctrlVoice = menu.findItem(R.id.ctrl_voice);
-        ctrlVoice.setChecked(voiceEnabled);
-    }
-
-    private void showMenuByMode(Menu menu) {
-        MenuItem startHere = menu.findItem(R.id.shortcut_start_here);
-        startHere.setVisible(reviewing);
-
-        MenuItem newGame = menu.findItem(R.id.shortcut_new_game);
-        newGame.setVisible(!reviewing);
-
-        MenuItem goBack = menu.findItem(R.id.shortcut_go_back);
-        goBack.setVisible(!reviewing);
-
-        MenuItem ctrlVoice = menu.findItem(R.id.shortcut_ctrl_voice);
-        ctrlVoice.setVisible(!reviewing);
-    }
-
-    private void showMenu(Menu menu) {
-        showVoiceCtrlMenu(menu);
-        showMenuByMode(menu);
+        findViewById(R.id.buttonContinue).setVisibility(View.VISIBLE);
+        findViewById(R.id.buttonStartHere).setVisibility(View.VISIBLE);
     }
 }

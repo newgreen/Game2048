@@ -4,7 +4,7 @@
     <string name="go_back">Go back…</string>
     <string name="sound_effect">Sound effect</string>
     <string name="load_game">Load game…</string>
-    <string name="start_here">Start here?</string>
+    <string name="start_here">Start here</string>
     <string name="go_back_one_step">Go back one step</string>
     <string name="disable_sound_effect">Disable sound effect</string>
     <string name="enable_sound_effect">Enable sound effect</string>
@@ -15,4 +15,5 @@
     <string name="init_steps">1000</string>
     <string name="init_score">256</string>
     <string name="init_max_number">2048</string>
+    <string name="Continue">Continue</string>
 </resources>

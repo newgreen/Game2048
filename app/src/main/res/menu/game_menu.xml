@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/shortcut_start_here"
-        android:orderInCategory="100"
-        android:title="@string/start_here"
-        android:visible="false"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-
     <item android:id="@+id/shortcut_new_game"
         android:orderInCategory="100"
         android:icon="@drawable/ic_new_game"
@@ -41,6 +34,7 @@
 
     <item android:id="@+id/go_back"
         android:orderInCategory="105"
+        android:visible="false"
         android:title="@string/go_back"
         app:showAsAction="never" />
 

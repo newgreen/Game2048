@@ -8,7 +8,7 @@
 
     <com.game.game2048.GridsLayout
         android:id="@+id/gridsLayout"
-        android:layout_width="340dp"
+        android:layout_width="350dp"
         android:layout_height="350dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.6"
+        app:layout_constraintVertical_bias="0.8"
         app:onFling="onFling" />
 
     <TextView
@@ -78,7 +78,7 @@
 
     <TextView
         android:id="@+id/textViewSteps"
-        android:layout_width="240dp"
+        android:layout_width="120dp"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="48dp"
@@ -90,7 +90,7 @@
 
     <TextView
         android:id="@+id/textViewScore"
-        android:layout_width="240dp"
+        android:layout_width="120dp"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
@@ -102,7 +102,7 @@
 
     <TextView
         android:id="@+id/textViewMaxNumber"
-        android:layout_width="240dp"
+        android:layout_width="120dp"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
@@ -111,5 +111,29 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textViewScore"
         app:layout_constraintStart_toEndOf="@+id/textViewTitleMaxNumber" />
+
+    <Button
+        android:id="@+id/buttonStartHere"
+        android:layout_width="115dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:onClick="actionStartHere"
+        android:text="@string/start_here"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/gridsLayout"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonContinue"
+        android:layout_width="115dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="actionContinue"
+        android:text="@string/Continue"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/buttonStartHere"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
