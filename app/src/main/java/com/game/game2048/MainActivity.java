@@ -22,12 +22,26 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private GameCore core;
     private int[][] history;
     private int[] historyScore;
+    private Player player;
+    private int soundDi;
+    private int soundBeu;
+    private int soundCher;
+    private int soundUh;
+
+    private void initSoundEffect() {
+        player = new Player(this);
+        soundDi = player.add(R.raw.di);
+        soundBeu = player.add(R.raw.beu);
+        soundCher = player.add(R.raw.cher);
+        soundUh = player.add(R.raw.uh);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initSoundEffect();
         initData();
         showFrame();
     }
@@ -202,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     }
 
     private void onFlingDurPlaying(Direction dir) {
+        int lastScore = data.score;
         boolean change = core.doAction(dir);
         if (change) {
             if (data.actionCount == 1) {
@@ -211,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         }
 
         if (core.isGameOver()) {
+            player.play(soundUh);
             new AlertDialog.Builder(this).setTitle("GAME OVER")
                     .setMessage("You have got " + data.score)
                     .setPositiveButton("Restart", new DialogInterface.OnClickListener() {
@@ -224,6 +240,8 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                     enterReviewMode();
                 }
             }).show();
+        } else if (change){
+            player.play(lastScore != data.score ? soundBeu : soundDi);
         }
     }
 
@@ -242,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             return;
         }
 
+        player.play(soundCher);
         showFrame();
     }
 
