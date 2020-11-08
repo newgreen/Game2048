@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     }
 
     private void refreshGrids() {
-        findTextViewById(R.id.textViewMaxNumber).setText(String.valueOf(data.maxNumber));
+        findTextViewById(R.id.textViewMaxNumber).setText(String.valueOf(data.historyMaxNumber));
         findTextViewById(R.id.textViewScore).setText(isPlaying() ?
                 String.valueOf(data.score) : String.valueOf(historyScore[data.replayStep]));
         findTextViewById(R.id.textViewSteps).setText(isPlaying() ?
@@ -265,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     }
 
     private void newGame() {
-        data = new GameData();
+        data.isInit = false;
         core = new GameCore(data);
 
         showFrame();
