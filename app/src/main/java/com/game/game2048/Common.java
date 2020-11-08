@@ -16,6 +16,10 @@ class Common {
         return Arrays.stream(array).min().getAsInt();
     }
 
+    static int max(int[] array) {
+        return Arrays.stream(array).max().getAsInt();
+    }
+
     // ON means play, OFF means replay
     static boolean gameStatusToBool(GameStatus gameStatus) {
         return (gameStatus == GameStatus.PLAY);
