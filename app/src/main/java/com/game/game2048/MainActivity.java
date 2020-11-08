@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         if (data == null) {
             data = GameData.load(this);
             core = new GameCore(data);
+            if (isReviewing()) {
+                enterReviewMode();
+            }
         }
     }
 
@@ -147,9 +150,6 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             data.replayStep = data.actionCount - 1;
         }
         data.gameStatus = GameStatus.REPLAY;
-
-        showFrame();
-        invalidateOptionsMenu();
     }
 
     private void leaveReviewMode() {
@@ -171,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
             case R.id.go_back:
                 enterReviewMode();
+                showFrame();
+                invalidateOptionsMenu();
                 return true;
 
             case R.id.shortcut_ctrl_voice:
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             case R.id.shortcut_go_back:
                 if (data.actionCount > 0) {
                     core.backward(data.actionCount - 1);
+                    data.replayStep = 0;
                     showFrame();
                     invalidateOptionsMenu();
                 }
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
     public void onActionStartHere(View view) {
         core.backward(data.replayStep);
+        data.replayStep = 0;
         leaveReviewMode();
     }
 
@@ -221,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             if (data.actionCount == 1) {
                 invalidateOptionsMenu();
             }
+            data.replayStep = 0;
             refreshGrids();
         }
 
@@ -237,6 +242,8 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     enterReviewMode();
+                    showFrame();
+                    invalidateOptionsMenu();
                 }
             }).show();
         } else if (change){
