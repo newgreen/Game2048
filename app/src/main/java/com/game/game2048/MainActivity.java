@@ -4,36 +4,31 @@ import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SoundEffect {
     private GameData data = null;
     private GameCore core;
+
     private int[][] history;
     private int[] historyScore;
+
+    private boolean needRefreshLoadGameList = true;
+    private GameHistory[] gameHistories = null;
+
     private Player player;
     private int soundDi;
     private int soundBeu;
     private int soundCher;
     private int soundUh;
-
-    private void initSoundEffect() {
-        player = new Player(this);
-        soundDi = player.add(R.raw.di);
-        soundBeu = player.add(R.raw.beu);
-        soundCher = player.add(R.raw.cher);
-        soundUh = player.add(R.raw.uh);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +40,12 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         showFrame();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.game_menu, menu);
-
-        initData();
-        prepareOptionsMenu(menu);
-        return true;
+    private void initSoundEffect() {
+        player = new Player(this);
+        soundDi = player.add(R.raw.di);
+        soundBeu = player.add(R.raw.beu);
+        soundCher = player.add(R.raw.cher);
+        soundUh = player.add(R.raw.uh);
     }
 
     private void initData() {
@@ -65,38 +58,10 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         }
     }
 
-    private TextView findTextViewById(@IdRes int id) {
-        return findViewById(id);
-    }
-
-    private String toDateString(long timeMillis, String format){
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
-        return simpleDateFormat.format(new Date(timeMillis));
-    }
-
-    private boolean isPlaying() {
-        return data.gameStatus == GameStatus.PLAY;
-    }
-
-    private boolean isReviewing() {
-        return data.gameStatus == GameStatus.REPLAY;
-    }
-
-    private void refreshGrids() {
-        findTextViewById(R.id.textViewMaxNumber).setText(String.valueOf(data.historyMaxNumber));
-        findTextViewById(R.id.textViewScore).setText(isPlaying() ?
-                String.valueOf(data.score) : String.valueOf(historyScore[data.replayStep]));
-        findTextViewById(R.id.textViewSteps).setText(isPlaying() ?
-                String.valueOf(data.actionCount) : data.replayStep + "/" + data.actionCount);
-
-        GridsLayout layout = findViewById(R.id.gridsLayout);
-        layout.setGridNumbers(isPlaying() ? data.grids : history[data.replayStep]);
-    }
-
     private void showFrame() {
         refreshGrids();
 
-        String startTime = "Start@" + toDateString(data.startTime, "yyyy-MM-dd HH:mm:ss");
+        String startTime = "Start@" + Common.toDateString(data.startTime, "yyyy-MM-dd HH:mm:ss");
         findTextViewById(R.id.textViewStartTime).setText(startTime);
 
         findViewById(R.id.buttonContinue).setVisibility(isReviewing() ? View.VISIBLE : View.INVISIBLE);
@@ -105,41 +70,12 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         findViewById(R.id.buttonStartHere).setVisibility(canRollBack ? View.VISIBLE : View.INVISIBLE);
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        prepareOptionsMenu(menu);
-        return true;
+    private boolean isReviewing() {
+        return data.gameStatus == GameStatus.REPLAY;
     }
 
-    private void prepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.shortcut_new_game).setVisible(isPlaying());
-        menu.findItem(R.id.new_game).setVisible(isPlaying());
-
-        menu.findItem(R.id.load_game).setVisible(isPlaying());
-
-        boolean canGoBack = isPlaying() && data.actionCount > 0;
-        menu.findItem(R.id.shortcut_go_back).setVisible(canGoBack);
-        menu.findItem(R.id.go_back).setVisible(canGoBack);
-
-        menu.findItem(R.id.shortcut_ctrl_voice)
-                .setIcon(soundEffectEnabled() ? R.drawable.ic_voice_enabled : R.drawable.ic_voice_disabled)
-                .setTitle(soundEffectEnabled() ? R.string.disable_sound_effect : R.string.enable_sound_effect);
-        menu.findItem(R.id.ctrl_voice).setChecked(soundEffectEnabled());
-    }
-
-    public boolean soundEffectEnabled() {
-        return data.gameSoundEffect;
-    }
-
-    private void switchVoiceCtrlStatus() {
-        data.gameSoundEffect = !data.gameSoundEffect;
-        invalidateOptionsMenu();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        data.store(this);
+    private boolean isPlaying() {
+        return data.gameStatus == GameStatus.PLAY;
     }
 
     private void enterReviewMode() {
@@ -161,9 +97,92 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         invalidateOptionsMenu();
     }
 
+    private void refreshGrids() {
+        findTextViewById(R.id.textViewMaxNumber).setText(String.valueOf(data.historyMaxNumber));
+        findTextViewById(R.id.textViewScore).setText(isPlaying() ?
+                String.valueOf(data.score) : String.valueOf(historyScore[data.replayStep]));
+        findTextViewById(R.id.textViewSteps).setText(isPlaying() ?
+                String.valueOf(data.actionCount) : data.replayStep + "/" + data.actionCount);
+
+        GridsLayout layout = findViewById(R.id.gridsLayout);
+        layout.setGridNumbers(isPlaying() ? data.grids : history[data.replayStep]);
+    }
+
+    private TextView findTextViewById(@IdRes int id) {
+        return findViewById(id);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.game_menu, menu);
+
+        initData();
+        prepareOptionsMenu(menu);
+        return true;
+    }
+
+    private void prepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.shortcut_new_game).setVisible(isPlaying());
+        menu.findItem(R.id.new_game).setVisible(isPlaying());
+
+        refreshLoadGameList(menu);
+
+        boolean canGoBack = isPlaying() && data.actionCount > 0;
+        menu.findItem(R.id.shortcut_go_back).setVisible(canGoBack);
+        menu.findItem(R.id.go_back).setVisible(canGoBack);
+
+        menu.findItem(R.id.shortcut_ctrl_voice)
+                .setIcon(soundEffectEnabled() ? R.drawable.ic_voice_enabled : R.drawable.ic_voice_disabled)
+                .setTitle(soundEffectEnabled() ? R.string.disable_sound_effect : R.string.enable_sound_effect);
+        menu.findItem(R.id.ctrl_voice).setChecked(soundEffectEnabled());
+    }
+
+    private void refreshLoadGameList(Menu menu) {
+        if (needRefreshLoadGameList) {
+            final int groupId = 0;
+            needRefreshLoadGameList = false;
+
+            SubMenu subMenu = menu.findItem(R.id.load_game).getSubMenu();
+            subMenu.removeGroup(groupId);
+
+            gameHistories = GameData.getHistory(this);
+            if (gameHistories != null) {
+                for (GameHistory history : gameHistories) {
+                    String title = "[" + history.startTime + "]" + history.maxNumber;
+                    subMenu.add(groupId, history.orderIndex, history.orderIndex, title);
+                }
+            }
+        }
+
+        menu.findItem(R.id.load_game).setVisible(isPlaying() && gameHistories != null);
+    }
+
+    public boolean soundEffectEnabled() {
+        return data.gameSoundEffect;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        prepareOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        data.store(this);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
+        if (gameHistories != null && itemId >= 0 && itemId < gameHistories.length) {
+            loadGame(gameHistories[itemId].dbName);
+            return true;
+        }
+
+        switch (itemId) {
             case R.id.shortcut_new_game:
             case R.id.new_game:
                 newGame();
@@ -189,13 +208,53 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 }
                 return true;
 
-            case R.id.load_game:
-                // TODO: load game from a data file
-                return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void loadGame(String theDbName) {
+        conditionBackupGame(data);
+
+        GameData theLoadData = GameData.load(this, theDbName);
+        deleteFile(theDbName);
+        refreshLoadGameList();
+
+        if (theLoadData != null) {
+            data.copy(theLoadData);
+            core = new GameCore(data);
+
+            showFrame();
+        } else {
+            Toast.makeText(this, "Fail to load the game", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void newGame() {
+        conditionBackupGame(data);
+
+        data.isInit = false;
+        core = new GameCore(data);
+
+        showFrame();
+        invalidateOptionsMenu();
+    }
+
+    private void conditionBackupGame(GameData game) {
+        if (game.actionCount > 0) {
+            game.store(this, game.dbName());
+            refreshLoadGameList();
+        }
+    }
+
+    private void refreshLoadGameList() {
+        needRefreshLoadGameList = true;
+        invalidateOptionsMenu();
+    }
+
+    private void switchVoiceCtrlStatus() {
+        data.gameSoundEffect = !data.gameSoundEffect;
+        invalidateOptionsMenu();
     }
 
     public void onActionStartHere(View view) {
@@ -268,13 +327,5 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
         player.play(soundCher);
         showFrame();
-    }
-
-    private void newGame() {
-        data.isInit = false;
-        core = new GameCore(data);
-
-        showFrame();
-        invalidateOptionsMenu();
     }
 }

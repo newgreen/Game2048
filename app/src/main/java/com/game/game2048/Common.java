@@ -1,6 +1,10 @@
 package com.game.game2048;
 
+import android.annotation.SuppressLint;
+
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 enum Direction {
     LEFT, RIGHT, UP, DOWN
@@ -16,18 +20,15 @@ class Common {
         return Arrays.stream(array).min().getAsInt();
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     static int max(int[] array) {
         return Arrays.stream(array).max().getAsInt();
     }
 
-    // ON means play, OFF means replay
-    static boolean gameStatusToBool(GameStatus gameStatus) {
-        return (gameStatus == GameStatus.PLAY);
-    }
-
-    static GameStatus boolToGameStatus(boolean switchOn) {
-        return switchOn ? GameStatus.PLAY : GameStatus.REPLAY;
-    }
+    static String toDateString(long timeMillis, String format){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(new Date(timeMillis));
+}
 
     static void assertCheck(boolean condition) {
         if (BuildConfig.DEBUG) {

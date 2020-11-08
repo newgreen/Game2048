@@ -30,7 +30,9 @@
     <item android:id="@+id/load_game"
         android:orderInCategory="104"
         android:title="@string/load_game"
-        app:showAsAction="never" />
+        app:showAsAction="never">
+        <menu/>
+    </item>
 
     <item android:id="@+id/go_back"
         android:orderInCategory="105"
