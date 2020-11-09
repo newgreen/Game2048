@@ -34,6 +34,13 @@
         <menu/>
     </item>
 
+    <item android:id="@+id/del_game"
+        android:orderInCategory="104"
+        android:title="@string/del_game"
+        app:showAsAction="never">
+        <menu/>
+    </item>
+
     <item android:id="@+id/go_back"
         android:orderInCategory="105"
         android:visible="false"

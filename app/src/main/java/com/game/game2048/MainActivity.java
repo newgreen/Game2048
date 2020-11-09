@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private int[][] history;
     private int[] historyScore;
 
+    private static final int GROUP_ID_LOAD = 0;
+    private static final int GROUP_ID_DEL = 1;
+
     private boolean needRefreshLoadGameList = true;
     private GameHistory[] gameHistories = null;
 
@@ -140,22 +143,26 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
     private void refreshLoadGameList(Menu menu) {
         if (needRefreshLoadGameList) {
-            final int groupId = 0;
             needRefreshLoadGameList = false;
 
-            SubMenu subMenu = menu.findItem(R.id.load_game).getSubMenu();
-            subMenu.removeGroup(groupId);
+            SubMenu loadSubMenu = menu.findItem(R.id.load_game).getSubMenu();
+            SubMenu delSubMenu = menu.findItem(R.id.del_game).getSubMenu();
+
+            loadSubMenu.removeGroup(GROUP_ID_LOAD);
+            delSubMenu.removeGroup(GROUP_ID_DEL);
 
             gameHistories = GameData.getHistory(this);
             if (gameHistories != null) {
                 for (GameHistory history : gameHistories) {
                     String title = "[" + history.startTime + "]" + history.maxNumber;
-                    subMenu.add(groupId, history.orderIndex, history.orderIndex, title);
+                    loadSubMenu.add(GROUP_ID_LOAD, history.orderIndex, history.orderIndex, title);
+                    delSubMenu.add(GROUP_ID_DEL, history.orderIndex, history.orderIndex, title);
                 }
             }
         }
 
         menu.findItem(R.id.load_game).setVisible(isPlaying() && gameHistories != null);
+        menu.findItem(R.id.del_game).setVisible(isPlaying() && gameHistories != null);
     }
 
     public boolean soundEffectEnabled() {
@@ -178,7 +185,11 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (gameHistories != null && itemId >= 0 && itemId < gameHistories.length) {
-            loadGame(gameHistories[itemId].dbName);
+            if (item.getGroupId() == GROUP_ID_LOAD) {
+                loadGame(gameHistories[itemId].dbName);
+            } else if (item.getGroupId() == GROUP_ID_DEL) {
+                deleteGame(gameHistories[itemId].dbName);
+            }
             return true;
         }
 
@@ -217,8 +228,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         conditionBackupGame(data);
 
         GameData theLoadData = GameData.load(this, theDbName);
-        deleteFile(theDbName);
-        refreshLoadGameList();
+        deleteGame(theDbName);
 
         if (theLoadData != null) {
             data.copy(theLoadData);
@@ -228,6 +238,11 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         } else {
             Toast.makeText(this, "Fail to load the game", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void deleteGame(String theDbName) {
+        deleteFile(theDbName);
+        refreshLoadGameList();
     }
 
     private void newGame() {
