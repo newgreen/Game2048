@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         if (data == null) {
             data = GameData.load(this);
             core = new GameCore(data);
+            data.store(this);
             if (isReviewing()) {
                 enterReviewMode();
             }
@@ -233,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
         if (theLoadData != null) {
             data.copy(theLoadData);
             core = new GameCore(data);
+            data.store(this);
 
             showFrame();
         } else {
@@ -250,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
         data.isInit = false;
         core = new GameCore(data);
+        data.store(this);
 
         showFrame();
         invalidateOptionsMenu();
@@ -301,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             }
             data.replayStep = 0;
             refreshGrids();
+            data.store(this);
         }
 
         if (core.isGameOver()) {
@@ -340,6 +344,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
             return;
         }
 
+        data.store(this);
         player.play(soundCher);
         showFrame();
     }
