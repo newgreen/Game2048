@@ -53,4 +53,9 @@
         android:checkable="true"
         android:checked="true"
         app:showAsAction="never" />
+
+    <item android:id="@+id/show_version"
+        android:orderInCategory="107"
+        android:title="@string/show_version"
+        app:showAsAction="never" />
 </menu>

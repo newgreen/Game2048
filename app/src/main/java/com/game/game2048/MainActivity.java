@@ -220,6 +220,10 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 }
                 return true;
 
+            case R.id.show_version:
+                Toast.makeText(this, getResources().getString(R.string.software_version), Toast.LENGTH_SHORT).show();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
