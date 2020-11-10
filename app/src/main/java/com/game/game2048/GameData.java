@@ -28,6 +28,7 @@ public class GameData implements Serializable {
     GameStatus gameStatus = GameStatus.PLAY;
     boolean gameSoundEffect = true;
     int replayStep = 0;
+    int goBackCnt = 0;
 
     int maxNumber;
     int historyMaxNumber;
@@ -47,9 +48,11 @@ public class GameData implements Serializable {
         gridNumberCount = data.gridNumberCount;
         actionHistory = data.actionHistory.clone();
         actionCount = data.actionCount;
+        goBackCnt = data.goBackCnt;
 
         maxNumber = data.maxNumber;
         startTime = data.startTime;
+        historyMaxNumber = Math.max(historyMaxNumber, data.historyMaxNumber);
 
         gameStatus = GameStatus.PLAY;
         replayStep = 0;

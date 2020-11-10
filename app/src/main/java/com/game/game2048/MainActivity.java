@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
         String startTime = "Start@" + Common.toDateString(data.startTime, "yyyy-MM-dd HH:mm:ss");
         findTextViewById(R.id.textViewStartTime).setText(startTime);
+        findTextViewById(R.id.textViewGoBackCnt).setText("GoBack " + data.goBackCnt);
 
         findViewById(R.id.buttonContinue).setVisibility(isReviewing() ? View.VISIBLE : View.INVISIBLE);
         // length-1 is the last step which need not be rolled back to
@@ -215,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 if (data.actionCount > 0) {
                     core.backward(data.actionCount - 1);
                     data.replayStep = 0;
+                    data.goBackCnt++;
                     showFrame();
                     invalidateOptionsMenu();
                 }
@@ -282,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     public void onActionStartHere(View view) {
         core.backward(data.replayStep);
         data.replayStep = 0;
+        data.goBackCnt++;
         leaveReviewMode();
     }
 
