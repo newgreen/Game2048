@@ -41,6 +41,7 @@ class GameCore {
         gameData.replayStep = 0;
 
         gameData.maxNumber = 0;
+        gameData.goBackCnt = 0;
         gameData.isInit = true;
     }
 

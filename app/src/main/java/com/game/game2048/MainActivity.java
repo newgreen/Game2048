@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private static final int GROUP_ID_LOAD = 0;
     private static final int GROUP_ID_DEL = 1;
 
-    private boolean needRefreshLoadGameList = true;
     private GameHistory[] gameHistories = null;
 
     private Player player;
@@ -65,9 +64,8 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private void showFrame() {
         refreshGrids();
 
-        String startTime = "Start@" + Common.toDateString(data.startTime, "yyyy-MM-dd HH:mm:ss");
-        findTextViewById(R.id.textViewStartTime).setText(startTime);
-        findTextViewById(R.id.textViewGoBackCnt).setText("GoBack " + data.goBackCnt);
+        findTextViewById(R.id.textViewStartTime).setText(("Start@" + Common.toDateString(data.startTime, "yyyy-MM-dd HH:mm:ss")));
+        findTextViewById(R.id.textViewGoBackCnt).setText(("GoBack " + data.goBackCnt));
 
         findViewById(R.id.buttonContinue).setVisibility(isReviewing() ? View.VISIBLE : View.INVISIBLE);
         // length-1 is the last step which need not be rolled back to
@@ -144,22 +142,18 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     }
 
     private void refreshLoadGameList(Menu menu) {
-        if (needRefreshLoadGameList) {
-            needRefreshLoadGameList = false;
+        SubMenu loadSubMenu = menu.findItem(R.id.load_game).getSubMenu();
+        SubMenu delSubMenu = menu.findItem(R.id.del_game).getSubMenu();
 
-            SubMenu loadSubMenu = menu.findItem(R.id.load_game).getSubMenu();
-            SubMenu delSubMenu = menu.findItem(R.id.del_game).getSubMenu();
+        loadSubMenu.removeGroup(GROUP_ID_LOAD);
+        delSubMenu.removeGroup(GROUP_ID_DEL);
 
-            loadSubMenu.removeGroup(GROUP_ID_LOAD);
-            delSubMenu.removeGroup(GROUP_ID_DEL);
-
-            gameHistories = GameData.getHistory(this);
-            if (gameHistories != null) {
-                for (GameHistory history : gameHistories) {
-                    String title = "[" + history.startTime + "]" + history.maxNumber;
-                    loadSubMenu.add(GROUP_ID_LOAD, history.orderIndex, history.orderIndex, title);
-                    delSubMenu.add(GROUP_ID_DEL, history.orderIndex, history.orderIndex, title);
-                }
+        gameHistories = GameData.getHistory(this);
+        if (gameHistories != null) {
+            for (GameHistory history : gameHistories) {
+                String title = "[" + history.startTime + "]" + history.maxNumber;
+                loadSubMenu.add(GROUP_ID_LOAD, history.orderIndex, history.orderIndex, title);
+                delSubMenu.add(GROUP_ID_DEL, history.orderIndex, history.orderIndex, title);
             }
         }
 
@@ -250,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
     private void deleteGame(String theDbName) {
         deleteFile(theDbName);
-        refreshLoadGameList();
+        invalidateOptionsMenu();
     }
 
     private void newGame() {
@@ -267,13 +261,8 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
     private void conditionBackupGame(GameData game) {
         if (game.actionCount > 0) {
             game.store(this, game.dbName());
-            refreshLoadGameList();
+            invalidateOptionsMenu();
         }
-    }
-
-    private void refreshLoadGameList() {
-        needRefreshLoadGameList = true;
-        invalidateOptionsMenu();
     }
 
     private void switchVoiceCtrlStatus() {
