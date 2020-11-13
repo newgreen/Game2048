@@ -34,6 +34,7 @@ public class GameData implements Serializable {
     int historyMaxNumber;
 
     long startTime;
+    boolean lockScreen = true;
 
     boolean isInit = false;
 

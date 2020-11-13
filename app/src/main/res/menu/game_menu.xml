@@ -22,6 +22,12 @@
         android:title="@string/disable_sound_effect"
         app:showAsAction="always" />
 
+    <item android:id="@+id/shortcut_lock_screen"
+        android:orderInCategory="103"
+        android:icon="@drawable/ic_lock_open"
+        android:title="Lock screen"
+        app:showAsAction="always" />
+
     <item android:id="@+id/new_game"
         android:orderInCategory="103"
         android:title="@string/new_game"

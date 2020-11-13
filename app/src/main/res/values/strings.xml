@@ -18,6 +18,6 @@
     <string name="init_max_number">2048</string>
     <string name="Continue">Continue</string>
     <string name="show_version">Show version</string>
-    <string name="software_version">version 20201112171044</string>
+    <string name="software_version">version 20201113115244</string>
     <string name="go_back_cnt">GoBack</string>
 </resources>

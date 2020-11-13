@@ -1,6 +1,7 @@
 package com.game.game2048;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.MainThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -139,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 .setIcon(soundEffectEnabled() ? R.drawable.ic_voice_enabled : R.drawable.ic_voice_disabled)
                 .setTitle(soundEffectEnabled() ? R.string.disable_sound_effect : R.string.enable_sound_effect);
         menu.findItem(R.id.ctrl_voice).setChecked(soundEffectEnabled());
+
+        menu.findItem(R.id.shortcut_lock_screen)
+                .setIcon(data.lockScreen ? R.drawable.ic_lock_outline : R.drawable.ic_lock_open)
+                .setTitle(data.lockScreen ? "Unlock screen" : "Lock screen");
     }
 
     private void refreshLoadGameList(Menu menu) {
@@ -206,6 +211,11 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
                 switchVoiceCtrlStatus();
                 return true;
 
+            case R.id.shortcut_lock_screen:
+                data.lockScreen = !data.lockScreen;
+                invalidateOptionsMenu();
+                return true;
+
             case R.id.shortcut_go_back:
                 if (data.actionCount > 0) {
                     core.backward(data.actionCount - 1);
@@ -222,6 +232,14 @@ public class MainActivity extends AppCompatActivity implements SoundEffect {
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    @MainThread
+    public void onBackPressed() {
+        if (!data.lockScreen) {
+            super.onBackPressed();
         }
     }
 
